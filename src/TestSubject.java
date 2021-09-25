@@ -15,9 +15,55 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class TestSubject {
+
+    public static void main(String[] args) {
+        loadFile();
+        mainMenu();
+    }
+
+    /*  Quick and easy console menu for entering in new subjects, viewing
+        current subjects, or outputting current subjects to a text file.
+        If the user input doesn't match any of the options, the menu will
+        just show again
+     */
+    public static void mainMenu() {
+        try {
+            System.out.print("\nMain menu\n---------\n");
+            System.out.println("1. Add new subjects");
+            System.out.println("2. View current subjects");
+            System.out.println("3. Save subjects to subjects.txt");
+            System.out.println("4. Exit program\n");
+            System.out.print("Selection: ");
+            Scanner input = new Scanner(System.in);
+            int menuSelection = input.nextInt();
+            switch (menuSelection) {
+                case 1 -> addSubject();
+                case 2 -> {
+                    TestSubject.printSubjects();
+                    mainMenu();
+                }
+                case 3 -> {
+                    TestSubject.writeFile();
+                    mainMenu();
+                }
+                case 4 -> System.exit(1);
+                default -> {
+                    System.out.println("Option unavailable, please try again");
+                    mainMenu();
+                }
+            }
+            input.close();
+        } catch (InputMismatchException e) {
+            System.out.println("Input must be a number, please try again");
+            mainMenu();
+        }
+    }
+
+
     private static final ArrayList<Subject> subjectList = new ArrayList<>();
     /*  I'll use an arraylist to store the subjects as we don't
     know how many there'll be. For initial data I've created
@@ -37,7 +83,7 @@ public class TestSubject {
         } catch (Exception e) {
             System.out.println("File startdata.txt does not exist");
             System.out.println("Initial subjects will not be populated");
-            Task1.mainMenu();
+            mainMenu();
         }
     }
 
@@ -58,39 +104,33 @@ public class TestSubject {
         }
     }
 
-    /*  three tests to check the subject code, then length
-        of the code, that the first three characters are
-        letters and the last three characters are numbers
+    /*  before adding the new subject, we'll run the subject code
+        through the tests in the TestSubject class. The subject name
+        doesn't go through any tests.
      */
-    public static boolean isValidCode(String inCode) {
-        /*  quick and easy to make sure the user only entered six characters
+    public static void addSubject() {
+        Scanner input = new Scanner(System.in);
+        TestSubject.printSubjects();
+        String subjectCode, subjectName;
+        System.out.print("\nPlease enter in the new six character subject code: ");
+        subjectCode = input.next();
+        if (!Subject.isValidCode(subjectCode))
+            addSubject(); // if false ask user to input the subject code again
+        /*  Executive decision to allow any case letters as the subject code,
+            and I'll just upper case the input
          */
-        if (inCode.length() != 6) {
-            System.out.println("\nSubject code must be six characters");
-            return false;
-        }
-        /*  I'll split the subject code into the char part and the number part,
-            so we can then check to see if it's a valid code before seeing if
-            its unique. I'll use regex to make sure the char part is only letters
-            and the number part is only numbers
-         */
-        String charCode = inCode.substring(0, 3);
-        if (!charCode.matches("[a-zA-Z]{3}")) {
-            System.out.println("\nSubject code must start with three letters. For example ABC");
-            return false;
-        }
-        String numCode = inCode.substring(3);
-        if (!numCode.matches("[0-9]{3}")) {
-            System.out.println("\nSubject code must end with three numbers. For example 123");
-            return false;
-        }
-        return true;
+        subjectCode = subjectCode.toUpperCase();
+        if (!TestSubject.codeExists(subjectCode))
+            addSubject(); // if false ask user to input the subject code again
+        System.out.print("Please enter in the new subject name: ");
+        subjectName = input.next();
+        subjectList.add(new Subject(subjectCode, subjectName));
+        mainMenu();
+        input.close();
     }
 
-    /*  to see if the subject code is unique, a simple
-        loop through the arraylist for the subject code
-        items for a match
-     */
+
+
     public static boolean codeExists(String inCode) {
         for (Subject subject : subjectList) {
             if (subject.subjectCode.equals(inCode)) {
@@ -99,12 +139,6 @@ public class TestSubject {
             }
         }
         return true;
-    }
-
-    /*  a standard add new subject to the arraylist method
-     */
-    public static void addSubject(String inCode, String inName) {
-        subjectList.add(new Subject(inCode, inName));
     }
 
     /*  print each current subject in the arraylist

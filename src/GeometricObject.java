@@ -1,4 +1,7 @@
-
+/*  copied this class from the requirements, did not
+    copy the comments as this is a provided class and
+    no input from myself has been added
+ */
 public abstract class GeometricObject {
     private String color = "white";
     private boolean filled;
@@ -29,4 +32,5 @@ public abstract class GeometricObject {
     public abstract double getArea();
 
     public abstract double getPerimeter();
+
 }
