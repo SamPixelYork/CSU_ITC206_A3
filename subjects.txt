@@ -1,0 +1,8 @@
+ITC114,Introduction to Database Systems
+ITC133,Customer Support Management
+ITC161,Computer Systems
+ITC206,Programming in Java 1
+ITC218,ICT Project Management
+ITC313,Programming in Java 2
+ITC331,Ethics and Professional Practice
+ITC358,IT Security
