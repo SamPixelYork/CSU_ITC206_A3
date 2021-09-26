@@ -1,5 +1,6 @@
 /*  this class is just to make it obvious which
-    class to run for task 1
+    class to run for task 1. Can directly run
+    TestSubject.java instead
  */
 public class Task1 {
 
